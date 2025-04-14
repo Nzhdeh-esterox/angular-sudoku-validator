@@ -136,6 +136,14 @@ h1 {
   font-weight: bold;
 }
 
+.success-message {
+  margin-top: 20px;
+  color: #4CAF50;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
   .sudoku-grid {

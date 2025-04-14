@@ -16,6 +16,7 @@ export class SudokuBoardComponent {
   timer: number = 0;
   timerInterval: any;
   isGameStarted: boolean = false;
+  successMessage: string = '';
 
   constructor(private fb: FormBuilder) {
     this.sudokuForm = this.createSudokuForm();
@@ -66,6 +67,7 @@ export class SudokuBoardComponent {
     this.checkDuplicates(gridValues, 'row');
     this.checkDuplicates(gridValues, 'column');
     this.checkDuplicates(gridValues, 'subgrid');
+    this.checkIfSolved();
   }
 
   getGridValues(): number[][] {
@@ -85,6 +87,28 @@ export class SudokuBoardComponent {
     }
 
     return values;
+  }
+
+  checkIfSolved(): void {
+    let allFilled = true;
+
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        const cellValue = this.getCell(row, col).value;
+        if (!cellValue || isNaN(Number(cellValue))) {
+          allFilled = false;
+          break;
+        }
+      }
+      if (!allFilled) break;
+    }
+
+    if (allFilled && this.invalidCells.size === 0) {
+      this.successMessage = '🎉 Congratulations! You solved the puzzle!';
+      this.resetTimer();
+    } else {
+      this.successMessage = '';
+    }
   }
 
   checkDuplicates(grid: number[][], type: 'row' | 'column' | 'subgrid'): void {

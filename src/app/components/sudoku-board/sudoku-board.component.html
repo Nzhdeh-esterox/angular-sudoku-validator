@@ -29,4 +29,8 @@
   <div *ngIf="invalidCells.size > 0" class="error-message">
     Invalid cells highlighted. Please correct duplicates in rows, columns, or 3x3 subgrids.
   </div>
+
+  <div class="success-message" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
 </div>
