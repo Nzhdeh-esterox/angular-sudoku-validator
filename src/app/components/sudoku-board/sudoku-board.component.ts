@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Va
   styleUrls: ['./sudoku-board.component.scss']
 })
 
-export class SudokuBoardComponent {
+export class SudokuBoardComponent implements OnInit {
   sudokuForm: FormGroup;
   invalidCells: Set<string> = new Set();
   timer: number = 0;
@@ -23,6 +23,10 @@ export class SudokuBoardComponent {
 
   constructor(private fb: FormBuilder) {
     this.sudokuForm = this.createSudokuForm();
+  }
+
+  ngOnInit() {
+    this.newGame();
   }
 
   createSudokuForm(): FormGroup {
@@ -110,6 +114,8 @@ export class SudokuBoardComponent {
       this.isSolved = true;
       this.successMessage = '🎉 Congratulations! You solved the puzzle!';
       this.stopTimer();
+    } else if (!allFilled && this.invalidCells.size === 0 ) {
+      this.successMessage = 'All correct! Keep going!';
     } else {
       this.successMessage = '';
     }
@@ -201,10 +207,19 @@ export class SudokuBoardComponent {
     this.isGameStarted = false;
     this.isSolved = false;
     this.successMessage = '';
+    this.renderStartingPuzzle();
+    this.startTimer();
   }
 
   newGame(): void {
     this.resetBoard();
+    this.renderStartingPuzzle();
+
+    this.startTimer();
+    this.isGameStarted = true;
+  }
+
+  renderStartingPuzzle () {
     // Hardcoded starting puzzle
     const puzzle = [
       [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -226,9 +241,6 @@ export class SudokuBoardComponent {
         }
       }
     }
-
-    this.startTimer();
-    this.isGameStarted = true;
   }
 
   startTimer(): void {
@@ -248,6 +260,7 @@ export class SudokuBoardComponent {
 
   resetTimer(): void {
     clearInterval(this.timerInterval);
+    this.isTimerRunning = false;
     this.timer = 0;
   }
 
@@ -269,6 +282,10 @@ export class SudokuBoardComponent {
     if ((charCode >= '1' && charCode <= '9') ||
       (charCode >= 'Digit1' && charCode <= 'Digit9') ||
       charCode === 'Backspace' || charCode === 'Delete') {
+      if (this.successMessage) {
+        this.successMessage = '';
+      }
+
       return true;
     }
 
