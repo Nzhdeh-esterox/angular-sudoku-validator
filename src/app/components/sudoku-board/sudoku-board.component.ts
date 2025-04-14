@@ -17,6 +17,9 @@ export class SudokuBoardComponent {
   timerInterval: any;
   isGameStarted: boolean = false;
   successMessage: string = '';
+  isSolved: boolean = false;
+  isTimerRunning: boolean = false;
+
 
   constructor(private fb: FormBuilder) {
     this.sudokuForm = this.createSudokuForm();
@@ -104,8 +107,9 @@ export class SudokuBoardComponent {
     }
 
     if (allFilled && this.invalidCells.size === 0) {
+      this.isSolved = true;
       this.successMessage = '🎉 Congratulations! You solved the puzzle!';
-      this.resetTimer();
+      this.stopTimer();
     } else {
       this.successMessage = '';
     }
@@ -195,6 +199,8 @@ export class SudokuBoardComponent {
     this.invalidCells.clear();
     this.resetTimer();
     this.isGameStarted = false;
+    this.isSolved = false;
+    this.successMessage = '';
   }
 
   newGame(): void {
@@ -226,10 +232,18 @@ export class SudokuBoardComponent {
   }
 
   startTimer(): void {
-    this.resetTimer();
-    this.timerInterval = setInterval(() => {
-      this.timer++;
-    }, 1000);
+    if (!this.isTimerRunning) {
+      this.isTimerRunning = true;
+      this.timerInterval = setInterval(() => {
+        if (this.isTimerRunning) {
+          this.timer++;
+        }
+      }, 1000);
+    }
+  }
+
+  stopTimer(): void {
+    this.isTimerRunning = false;
   }
 
   resetTimer(): void {
@@ -245,6 +259,10 @@ export class SudokuBoardComponent {
   }
 
   onKeyPress(event: KeyboardEvent): boolean {
+    if (this.isSolved) {
+      return false;
+    }
+
     const charCode = event.key || event.code;
 
     // Allow only numbers 1-9 and backspace/delete

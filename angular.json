@@ -64,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sudoku-app-angular:build:production"
+              "buildTarget": "angular-sudoku-validator:build:production"
             },
             "development": {
-              "buildTarget": "sudoku-app-angular:build:development"
+              "buildTarget": "angular-sudoku-validator:build:development"
             }
           },
           "defaultConfiguration": "development"
